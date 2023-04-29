@@ -41,6 +41,7 @@ services:
       - "127.0.0.1:8081:8081" # Prevents exposure beyond localhost
     depends_on: 
       - mongo
+    restart: unless-stopped
 
 volumes:
    mongodb:
