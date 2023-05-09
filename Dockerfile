@@ -27,7 +27,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["node", "build/server.js"]
+CMD ["node", "build/index.js"]
 
 ## Stage 2 (development)
 FROM base as dev
@@ -41,7 +41,7 @@ RUN npm install \
 
 USER node
 
-CMD ["ts-node-dev", "src/server.ts"]
+CMD ["ts-node-dev", "src/index.ts"]
 
 ## Stage 3 (build)
 FROM dev as build
