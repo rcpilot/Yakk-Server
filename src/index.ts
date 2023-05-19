@@ -1,4 +1,6 @@
 import express, { Request, Response } from 'express'
+import http from 'http'
+import { Server } from 'socket.io'
 import { json, urlencoded } from 'body-parser'
 import mongoose from 'mongoose'
 import { healthcheckRouter } from './routes/healthcheck'
@@ -15,6 +17,13 @@ mongoose.connect(`mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWO
 })
 
 const app = express() 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(json())
 app.use('/api', healthcheckRouter)
@@ -25,8 +34,15 @@ app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: 'Welcome to Yakk.' });
 });
 
+io.on('connection', function(socket: any) {
+  console.log(`Client connected [id=${socket.id}]`);
+  socket.on('message', function(message: any) {
+    console.log(message); 
+    socket.emit('message', message);
+  })
+})
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })
