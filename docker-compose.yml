@@ -44,7 +44,6 @@ services:
       - "127.0.0.1:6379:6379"
     volumes:
       - redis:/data
-      - "./healthchecks:/healthchecks"
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
       interval: "5s"
