@@ -1,12 +1,11 @@
 services:
-
   yakk:
-    build: 
+    build:
       context: .
       dockerfile: ./Dockerfile
       target: dev
     ports:
-      - '3001:3001'
+      - "3001:3001"
     volumes:
       - .:/app
     environment:
@@ -16,7 +15,13 @@ services:
     healthcheck:
       test: curl --fail http://localhost:3001 || exit 1
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - front-tier
+      - back-tier
 
   mongo:
     image: mongo:6.0
@@ -26,11 +31,31 @@ services:
     ports:
       - "127.0.0.1:27017:27017"
     volumes:
-     - mongodb:/data/db
-     - mongodb_config:/data/configdb
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+    networks:
+      - back-tier
+
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis:/data
+      - "./healthchecks:/healthchecks"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: "5s"
+    networks:
+      - back-tier
 
 volumes:
-   mongodb:
-   mongodb_config:
+  mongodb:
+  mongodb_config:
+  redis:
+
+networks:
+  front-tier:
+  back-tier:
