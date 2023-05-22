@@ -1,5 +1,5 @@
 ## Stage 1 (production base)
-FROM node:18-alpine as base
+FROM node:20-alpine as base
 
 LABEL org.opencontainers.image.authors=cgreen@coretag.net
 LABEL org.opencontainers.image.title="Yakk Backend"
