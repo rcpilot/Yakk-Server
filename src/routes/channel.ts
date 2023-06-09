@@ -1,8 +1,13 @@
-import express from 'express'
-import ChannelController from '../controllers/channel'
+import express from "express";
+import passport from "passport";
+import ChannelController from "../controllers/channel";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/create', ChannelController.create)
+router.post(
+  "/create",
+  passport.authenticate("jwt", { session: false }),
+  ChannelController.create
+);
 
-export { router as channelRouter }
+export { router as channelRouter };
