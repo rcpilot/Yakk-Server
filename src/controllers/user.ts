@@ -24,7 +24,7 @@ const UserController = {
     const user = await UserController.getByEmail(email);
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign({ userId: user._id }, process.env.SECRET);
+      const token = jwt.sign({ userId: user._id }, process.env.PASSPORT_SECRET);
       return res.json({ token: token });
     } else {
       return res.status(401).json({ error: "Invalid username or password" });

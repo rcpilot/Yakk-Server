@@ -11,7 +11,6 @@ import { configurePassport } from './config/passport';
 import { healthcheckRouter } from "./routes/healthcheck";
 import { serverRouter } from "./routes/server";
 import { channelRouter } from "./routes/channel";
-import "./environment.d.ts";
 
 mongoose
   .connect(
@@ -28,7 +27,7 @@ mongoose
       console.log("MongoDb failed to connect!");
       console.log(err);
     }
-  );
+  ); 
 
 const app = express();
 const server = http.createServer(app);
